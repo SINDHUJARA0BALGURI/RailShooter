@@ -5,20 +5,27 @@ using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 public class Movement : MonoBehaviour
 {
+    [Header("General")] 
+    [SerializeField] float speed;
+    [SerializeField] float xRange = 16.0f;
+    [SerializeField] float yRange = 5.0f;
+
+    //x rotation means pitch, y rotation means yaw,z means roll
+    [Header("position-controlled")]
     [SerializeField]
-    float speed;
-    float xRange = 250.0f;
-    float yRange = 60.0f;
+    float positionpitchFactor = 5.0f;
     [SerializeField]
-    float positionrotationFactor = 5.0f;
-    [SerializeField]
-    float controlRotationFactor = 1.0f;
+    float controlpitchFactor = 5.0f;
     [SerializeField]
     float positionyawFactor = 5.0f;
     [SerializeField]
     float controlRollFactor = 5.0f;
 
     float xOffset, yOffset;
+
+    //flag means bool Condition
+
+    bool isPlayerAlive = true;
 
 
     void Start()
@@ -29,16 +36,26 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        PlayerPosition();
-        PlayerRotation();
+        if (isPlayerAlive)
+        {
+            PlayerPosition();
+            PlayerRotation();
+
+        }
+    }
+
+    void OnPlayerDeath()
+    {
+        isPlayerAlive = false;
+        print("Received message");
     }
 
     private void PlayerRotation()
     {
         //
         //float xRotation = transform.localRotation.x * rotationFactor;
-        float yRotation = transform.localRotation.y * positionrotationFactor;
-        float pitchControlValue = yOffset * controlRotationFactor;
+        float yRotation = transform.localRotation.y * positionpitchFactor;
+        float pitchControlValue = yOffset * controlpitchFactor;
         float pitch = yRotation + pitchControlValue;
 
         float yaw = transform.localPosition.x + positionyawFactor;
